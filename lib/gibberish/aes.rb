@@ -49,14 +49,14 @@ module Gibberish
       setup_cipher(:encrypt, salt)
       e = cipher.update(data) + cipher.final
       e = "Salted__#{salt}#{e}" #OpenSSL compatible
-      opts[:binary] ? e : Base64.encode64(e)
+      opts[:binary] ? e : Base64.urlsafe_encode64(e)
     end
     alias :enc :encrypt
     alias :e :encrypt
 
     def decrypt(data, opts={})
       raise ArgumentError, 'Data is too short' unless data.length >= 16
-      data = Base64.decode64(data) unless opts[:binary]
+      data = Base64.urlsafe_decode64(data) unless opts[:binary]
       salt = data[8..15]
       data = data[16..-1]
       setup_cipher(:decrypt, salt)
